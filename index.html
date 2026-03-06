@@ -26,12 +26,20 @@
       font-family: 'EB Garamond', Georgia, serif;
     }
 
-    /* ── OUTER WRAPPER — left-aligned, padded ── */
-    .outer {
+    /* ── CENTER WRAPPER ── */
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 3.5rem 2.5rem 0;
     }
 
-    /* ── NAME ── */
+    /* Name and title left-aligned within the centered block */
+    .header-block {
+      width: 100%;
+      max-width: 900px;
+    }
+
     .name {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: clamp(2.4rem, 7vw, 4.2rem);
@@ -40,7 +48,8 @@
       text-transform: uppercase;
       color: var(--navy);
       line-height: 1.0;
-      display: inline-block; /* so we can measure its rendered width */
+      margin-bottom: 0.35rem;
+      display: inline-block;
     }
 
     .title {
@@ -52,41 +61,33 @@
       color: var(--steel-blue);
     }
 
-    /* ── RULED SECTION — width set by JS to match name ── */
-    #ruled-section {
-      /* width set dynamically via JS */
+    /* ── DOUBLE RULE — width matched to name via JS ── */
+    #double-rule {
+      /* width set by JS */
+      border: none;
+      background: transparent;
     }
 
-    /* Equidistant spacing: equal margin above and below the double rule */
-    .spacer-above {
-      /* height set dynamically via JS */
-    }
-
-    .double-rule {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem; /* gap between the two faint lines */
-    }
-
-    .double-rule span {
+    #double-rule::before,
+    #double-rule::after {
+      content: '';
       display: block;
       width: 100%;
       height: 1px;
-      background: var(--navy);
+      background-color: var(--navy);
       opacity: 0.2;
     }
 
-    .spacer-below {
-      /* height set dynamically via JS */
+    #double-rule::before {
+      margin-bottom: 5px;
     }
 
     /* ── ACTION BAR ── */
     .action-bar {
-      padding: 0 2.5rem 1rem;
       display: flex;
       align-items: center;
       gap: 1.25rem;
+      padding-bottom: 1rem;
     }
 
     .btn-download {
@@ -114,9 +115,9 @@
       color: var(--warm-mid);
     }
 
-    /* ── PDF CANVAS — width set by JS to match name ── */
+    /* ── PDF CANVAS ── */
     .pdf-area {
-      padding: 0 2.5rem 3rem;
+      padding-bottom: 3rem;
     }
 
     #pdf-canvas {
@@ -130,6 +131,7 @@
       border-top: 1px solid var(--light-rule);
       padding: 1.1rem 2rem;
       text-align: center;
+      width: 100%;
     }
 
     .footer-text {
@@ -140,17 +142,11 @@
       color: var(--warm-mid);
     }
 
-    /* ── MOBILE ── */
     @media (max-width: 600px) {
-      .outer { padding: 2rem 1.5rem 0; }
-      .action-bar { padding: 0 1.5rem 1rem; }
-      .pdf-area { padding: 0 1.5rem 2.5rem; }
+      .center { padding: 2rem 1.25rem 0; }
     }
 
-    /* Load animation */
-    .outer, .action-bar, .pdf-area {
-      animation: fadeIn 0.4s ease both;
-    }
+    .center, .action-bar, .pdf-area { animation: fadeIn 0.4s ease both; }
     .action-bar { animation-delay: 0.08s; }
     .pdf-area   { animation-delay: 0.16s; }
 
@@ -162,36 +158,29 @@
 </head>
 <body>
 
-  <div class="outer">
-    <h1 class="name" id="name-el">Elliot Z Muehlhausen</h1>
-    <br>
-    <p class="title" id="title-el">Student Journalist</p>
-
-    <!-- ruled section width controlled by JS -->
-    <div id="ruled-section">
-      <div class="spacer-above" id="spacer-above"></div>
-      <div class="double-rule">
-        <span></span>
-        <span></span>
-      </div>
-      <div class="spacer-below" id="spacer-below"></div>
+  <div class="center">
+    <div class="header-block">
+      <h1 class="name" id="name-el">Elliot Z Muehlhausen</h1>
+      <p class="title" id="title-el">Student Journalist</p>
     </div>
-  </div>
 
-  <div class="action-bar" id="action-bar">
-    <a class="btn-download" href="elliot-resume.pdf" download="Elliot-Muehlhausen-Resume.pdf">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Download PDF
-    </a>
-    <span class="action-note">View below or save a copy</span>
-  </div>
+    <div id="double-rule"></div>
 
-  <div class="pdf-area" id="pdf-area">
-    <canvas id="pdf-canvas"></canvas>
+    <div class="action-bar" id="action-bar">
+      <a class="btn-download" id="btn-dl" href="elliot-resume.pdf" download="Elliot-Muehlhausen-Resume.pdf">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download PDF
+      </a>
+      <span class="action-note">View below or save a copy</span>
+    </div>
+
+    <div class="pdf-area">
+      <canvas id="pdf-canvas"></canvas>
+    </div>
   </div>
 
   <footer>
@@ -202,69 +191,60 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    function alignToName() {
+    function alignElements() {
       const nameEl = document.getElementById('name-el');
+      const rule   = document.getElementById('double-rule');
+      const canvas = document.getElementById('pdf-canvas');
+      const btn    = document.getElementById('btn-dl');
+
       const nameWidth = nameEl.getBoundingClientRect().width;
 
-      // Set ruled section and pdf-area to match name width
-      const ruledSection = document.getElementById('ruled-section');
-      ruledSection.style.width = nameWidth + 'px';
-
-      const canvas = document.getElementById('pdf-canvas');
+      rule.style.width  = nameWidth + 'px';
       canvas.style.width = nameWidth + 'px';
 
-      // Equidistant spacing: measure button height, split evenly above/below rule
-      const btn = document.querySelector('.btn-download');
       const btnHeight = btn.getBoundingClientRect().height;
-      const half = (btnHeight / 2) + 'px';
-
-      document.getElementById('spacer-above').style.height = half;
-      document.getElementById('spacer-below').style.height = half;
+      const half = Math.round(btnHeight / 2);
+      rule.style.paddingTop    = half + 'px';
+      rule.style.paddingBottom = half + 'px';
     }
 
     async function renderPDF() {
+      alignElements();
+
       const canvas = document.getElementById('pdf-canvas');
-      const ctx = canvas.getContext('2d');
-
-      // Wait for alignment first
-      alignToName();
-
-      const targetWidth = canvas.getBoundingClientRect().width || canvas.offsetWidth;
+      const ctx    = canvas.getContext('2d');
+      const targetWidth = canvas.getBoundingClientRect().width;
 
       try {
-        const pdf = await pdfjsLib.getDocument('elliot-resume.pdf').promise;
+        const pdf  = await pdfjsLib.getDocument('elliot-resume.pdf').promise;
         const page = await pdf.getPage(1);
 
-        const viewport = page.getViewport({ scale: 1 });
-        const scale = targetWidth / viewport.width;
-        const scaledViewport = page.getViewport({ scale });
+        const baseViewport = page.getViewport({ scale: 1 });
+        const scale        = targetWidth / baseViewport.width;
+        const viewport     = page.getViewport({ scale });
 
         const dpr = window.devicePixelRatio || 1;
-        canvas.width = scaledViewport.width * dpr;
-        canvas.height = scaledViewport.height * dpr;
-        canvas.style.width = scaledViewport.width + 'px';
-        canvas.style.height = scaledViewport.height + 'px';
+        canvas.width        = viewport.width  * dpr;
+        canvas.height       = viewport.height * dpr;
+        canvas.style.width  = viewport.width  + 'px';
+        canvas.style.height = viewport.height + 'px';
         ctx.scale(dpr, dpr);
 
-        await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+        await page.render({ canvasContext: ctx, viewport }).promise;
 
       } catch (err) {
         console.error('PDF render error:', err);
       }
     }
 
-    // Run after fonts are likely loaded
-    document.fonts.ready.then(() => {
-      renderPDF();
-    });
+    document.fonts.ready.then(renderPDF);
 
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         renderPDF();
       }, 100);
     });
