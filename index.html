@@ -21,62 +21,68 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      height: 100%;
-      overflow: hidden; /* No page scroll */
       background-color: var(--cream);
       color: var(--navy);
       font-family: 'EB Garamond', Georgia, serif;
     }
 
-    /* Full-height flex layout */
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-
     /* ── HEADER ── */
     header {
-      flex-shrink: 0;
-      padding: 2rem 2.5rem 1.25rem;
-      max-width: 900px;
-      width: 100%;
+      padding: 3.5rem 2.5rem 1.5rem;
+      max-width: 1100px;
       margin: 0 auto;
+      width: 100%;
     }
 
     .name {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-size: clamp(2.4rem, 7vw, 4.2rem);
       font-weight: 300;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--navy);
       line-height: 1.0;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.4rem;
     }
 
     .title {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(0.85rem, 2vw, 1.15rem);
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
       font-weight: 400;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--steel-blue);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
     }
 
-    .header-rule { width: 100%; height: 1px; background: var(--light-rule); }
+    /* Double rule — height roughly matching download button text */
+    .double-rule {
+      width: 100%;
+      height: 0.75rem; /* approximate height of button text line */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .double-rule::before,
+    .double-rule::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--navy);
+      opacity: 0.25;
+    }
 
     /* ── ACTION BAR ── */
     .action-bar {
-      flex-shrink: 0;
-      padding: 0.75rem 2.5rem;
+      padding: 0.9rem 2.5rem;
       display: flex;
       align-items: center;
       gap: 1.25rem;
-      max-width: 900px;
-      width: 100%;
+      max-width: 1100px;
       margin: 0 auto;
-      border-bottom: 1px solid var(--light-rule);
+      width: 100%;
     }
 
     .btn-download {
@@ -86,11 +92,11 @@
       background: var(--navy);
       color: var(--cream);
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       text-decoration: none;
-      padding: 0.55rem 1.3rem;
+      padding: 0.6rem 1.4rem;
       transition: background 0.2s, transform 0.15s;
       white-space: nowrap;
     }
@@ -99,33 +105,30 @@
 
     .action-note {
       font-family: 'EB Garamond', Georgia, serif;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-style: italic;
       color: var(--warm-mid);
     }
 
-    /* ── PDF CANVAS AREA ── */
+    /* ── PDF CANVAS ── */
     .pdf-area {
-      flex: 1;
-      overflow: hidden; /* no scrolling */
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 1.5rem 2rem 0;
+      padding: 0 2.5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     #pdf-canvas {
       display: block;
-      max-width: 100%;
+      width: 100%;
       height: auto;
       box-shadow: 0 2px 4px rgba(26,39,68,0.06), 0 8px 32px rgba(26,39,68,0.12);
     }
 
     /* ── FOOTER ── */
     footer {
-      flex-shrink: 0;
       border-top: 1px solid var(--light-rule);
-      padding: 0.9rem 2rem;
+      padding: 1.1rem 2rem;
       text-align: center;
     }
 
@@ -137,12 +140,11 @@
       color: var(--warm-mid);
     }
 
-    /* ── MOBILE: allow scroll on small screens ── */
+    /* ── MOBILE ── */
     @media (max-width: 600px) {
-      html, body { overflow: auto; height: auto; }
-      header { padding: 2rem 1.5rem 1rem; text-align: center; }
+      header { padding: 2.5rem 1.5rem 1.25rem; text-align: center; }
       .action-bar { padding: 0.75rem 1.5rem; justify-content: center; }
-      .pdf-area { padding: 1rem 1rem 2rem; }
+      .pdf-area { padding: 0 1.5rem 2.5rem; }
     }
 
     /* Load animation */
@@ -161,7 +163,7 @@
   <header>
     <h1 class="name">Elliot Z Muehlhausen</h1>
     <p class="title">Student Journalist</p>
-    <div class="header-rule"></div>
+    <div class="double-rule"></div>
   </header>
 
   <div class="action-bar">
@@ -185,7 +187,6 @@
   </footer>
 
   <script>
-    // Set PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -197,22 +198,12 @@
         const pdf = await pdfjsLib.getDocument('elliot-resume.pdf').promise;
         const page = await pdf.getPage(1);
 
-        // Scale to fit the available area width
+        // Use the full available width of the pdf-area container
         const pdfArea = document.querySelector('.pdf-area');
-        const availableWidth = pdfArea.clientWidth - 32; // minus padding
-        const availableHeight = pdfArea.clientHeight;
+        const availableWidth = pdfArea.clientWidth;
 
         const viewport = page.getViewport({ scale: 1 });
-        
-        // Fit by width first, then check height
-        let scale = availableWidth / viewport.width;
-        const scaledHeight = viewport.height * scale;
-        
-        // If scaled height exceeds available, fit by height instead
-        if (scaledHeight > availableHeight) {
-          scale = availableHeight / viewport.height;
-        }
-
+        const scale = availableWidth / viewport.width;
         const scaledViewport = page.getViewport({ scale });
 
         // HiDPI support
@@ -231,7 +222,12 @@
     }
 
     renderPDF();
-    window.addEventListener('resize', renderPDF);
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('pdf-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      renderPDF();
+    });
   </script>
 
 </body>
