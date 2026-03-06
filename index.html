@@ -7,68 +7,76 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
     :root {
-      --cream:       #F5F0E8;
-      --navy:        #1A2744;
-      --steel-blue:  #3D6B9A;
-      --light-rule:  #DDD8CE;
-      --warm-mid:    #7A8A9A;
+      --cream:      #F5F0E8;
+      --navy:       #1A2744;
+      --steel-blue: #3D6B9A;
+      --light-rule: #DDD8CE;
+      --warm-mid:   #7A8A9A;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
 
-    body {
+    html, body {
+      height: 100%;
+      overflow: hidden; /* No page scroll */
       background-color: var(--cream);
       color: var(--navy);
       font-family: 'EB Garamond', Georgia, serif;
-      min-height: 100vh;
+    }
+
+    /* Full-height flex layout */
+    body {
       display: flex;
       flex-direction: column;
     }
 
+    /* ── HEADER ── */
     header {
-      padding: 3.5rem 2rem 2rem;
-      max-width: 860px;
-      margin: 0 auto;
+      flex-shrink: 0;
+      padding: 2rem 2.5rem 1.25rem;
+      max-width: 900px;
       width: 100%;
+      margin: 0 auto;
     }
 
     .name {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(2.4rem, 7vw, 4.2rem);
+      font-size: clamp(2rem, 5vw, 3.6rem);
       font-weight: 300;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--navy);
       line-height: 1.0;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
     }
 
     .title {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-size: clamp(0.85rem, 2vw, 1.15rem);
       font-weight: 400;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--steel-blue);
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
     }
 
     .header-rule { width: 100%; height: 1px; background: var(--light-rule); }
 
+    /* ── ACTION BAR ── */
     .action-bar {
-      border-bottom: 1px solid var(--light-rule);
-      padding: 1rem 2rem;
+      flex-shrink: 0;
+      padding: 0.75rem 2.5rem;
       display: flex;
       align-items: center;
       gap: 1.25rem;
-      max-width: 860px;
-      margin: 0 auto;
+      max-width: 900px;
       width: 100%;
-      flex-wrap: wrap;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--light-rule);
     }
 
     .btn-download {
@@ -78,11 +86,11 @@
       background: var(--navy);
       color: var(--cream);
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       text-decoration: none;
-      padding: 0.6rem 1.4rem;
+      padding: 0.55rem 1.3rem;
       transition: background 0.2s, transform 0.15s;
       white-space: nowrap;
     }
@@ -91,60 +99,56 @@
 
     .action-note {
       font-family: 'EB Garamond', Georgia, serif;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-style: italic;
       color: var(--warm-mid);
     }
 
-    main {
+    /* ── PDF CANVAS AREA ── */
+    .pdf-area {
       flex: 1;
-      padding: 2rem 2rem 3rem;
-      max-width: 860px;
-      margin: 0 auto;
-      width: 100%;
+      overflow: hidden; /* no scrolling */
       display: flex;
-      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.5rem 2rem 0;
     }
 
-    .pdf-container { flex: 1; min-height: 78vh; }
-
-    .pdf-container iframe {
-      width: 100%;
-      min-height: 78vh;
-      border: none;
-      box-shadow: 0 2px 4px rgba(26,39,68,0.06), 0 8px 32px rgba(26,39,68,0.10);
-      background: white;
+    #pdf-canvas {
       display: block;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 2px 4px rgba(26,39,68,0.06), 0 8px 32px rgba(26,39,68,0.12);
     }
 
-    .mobile-fallback { display: none; text-align: center; padding: 3rem 1rem; }
-    .mobile-fallback p { font-size: 1rem; font-style: italic; color: var(--warm-mid); margin-bottom: 1.5rem; line-height: 1.7; }
-
+    /* ── FOOTER ── */
     footer {
+      flex-shrink: 0;
       border-top: 1px solid var(--light-rule);
-      padding: 1.25rem 2rem;
+      padding: 0.9rem 2rem;
       text-align: center;
     }
 
     .footer-text {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--warm-mid);
     }
 
+    /* ── MOBILE: allow scroll on small screens ── */
     @media (max-width: 600px) {
-      header { padding: 2.5rem 1.5rem 1.5rem; text-align: center; }
-      .action-bar { padding: 1rem 1.5rem; justify-content: center; }
-      .pdf-container iframe { display: none; }
-      .mobile-fallback { display: block; }
-      main { padding: 1.5rem 1.5rem 2.5rem; }
+      html, body { overflow: auto; height: auto; }
+      header { padding: 2rem 1.5rem 1rem; text-align: center; }
+      .action-bar { padding: 0.75rem 1.5rem; justify-content: center; }
+      .pdf-area { padding: 1rem 1rem 2rem; }
     }
 
-    header      { animation: fadeIn 0.4s ease both; }
-    .action-bar { animation: fadeIn 0.4s ease 0.08s both; }
-    main        { animation: fadeIn 0.4s ease 0.16s both; }
+    /* Load animation */
+    header, .action-bar, .pdf-area { animation: fadeIn 0.4s ease both; }
+    .action-bar { animation-delay: 0.08s; }
+    .pdf-area   { animation-delay: 0.16s; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -162,7 +166,7 @@
 
   <div class="action-bar">
     <a class="btn-download" href="elliot-resume.pdf" download="Elliot-Muehlhausen-Resume.pdf">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
         <polyline points="7 10 12 15 17 10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
@@ -172,26 +176,63 @@
     <span class="action-note">View below or save a copy</span>
   </div>
 
-  <main>
-    <div class="pdf-container">
-      <iframe src="elliot-resume.pdf" title="Elliot Muehlhausen Resume" aria-label="Resume PDF viewer"></iframe>
-      <div class="mobile-fallback">
-        <p>Tap below to open the resume in your browser,<br>where you can read and save a copy.</p>
-        <a class="btn-download" href="elliot-resume.pdf" target="_blank">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
-          Open Resume
-        </a>
-      </div>
-    </div>
-  </main>
+  <div class="pdf-area">
+    <canvas id="pdf-canvas"></canvas>
+  </div>
 
   <footer>
     <p class="footer-text">Elliot Z Muehlhausen &nbsp;·&nbsp; Butler University</p>
   </footer>
+
+  <script>
+    // Set PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    async function renderPDF() {
+      const canvas = document.getElementById('pdf-canvas');
+      const ctx = canvas.getContext('2d');
+
+      try {
+        const pdf = await pdfjsLib.getDocument('elliot-resume.pdf').promise;
+        const page = await pdf.getPage(1);
+
+        // Scale to fit the available area width
+        const pdfArea = document.querySelector('.pdf-area');
+        const availableWidth = pdfArea.clientWidth - 32; // minus padding
+        const availableHeight = pdfArea.clientHeight;
+
+        const viewport = page.getViewport({ scale: 1 });
+        
+        // Fit by width first, then check height
+        let scale = availableWidth / viewport.width;
+        const scaledHeight = viewport.height * scale;
+        
+        // If scaled height exceeds available, fit by height instead
+        if (scaledHeight > availableHeight) {
+          scale = availableHeight / viewport.height;
+        }
+
+        const scaledViewport = page.getViewport({ scale });
+
+        // HiDPI support
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = scaledViewport.width * dpr;
+        canvas.height = scaledViewport.height * dpr;
+        canvas.style.width = scaledViewport.width + 'px';
+        canvas.style.height = scaledViewport.height + 'px';
+        ctx.scale(dpr, dpr);
+
+        await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+
+      } catch (err) {
+        console.error('PDF render error:', err);
+      }
+    }
+
+    renderPDF();
+    window.addEventListener('resize', renderPDF);
+  </script>
 
 </body>
 </html>
